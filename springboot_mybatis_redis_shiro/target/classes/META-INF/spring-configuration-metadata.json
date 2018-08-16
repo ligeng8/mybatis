@@ -1,0 +1,47 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.dt.spring.config.DataSourceConfig",
+      "name": "druid",
+      "type": "com.dt.spring.config.DataSourceConfig"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.dt.spring.config.DataSourceConfig",
+      "name": "druid.driver-class",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dt.spring.config.DataSourceConfig",
+      "name": "druid.initial-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.dt.spring.config.DataSourceConfig",
+      "name": "druid.max-active",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.dt.spring.config.DataSourceConfig",
+      "name": "druid.min-idle",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.dt.spring.config.DataSourceConfig",
+      "name": "druid.password",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dt.spring.config.DataSourceConfig",
+      "name": "druid.url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dt.spring.config.DataSourceConfig",
+      "name": "druid.username",
+      "type": "java.lang.String"
+    }
+  ]
+}
