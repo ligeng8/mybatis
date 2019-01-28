@@ -7,15 +7,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dt.spring.config.DataSourceConfig;
+import com.dt.spring.service.DbtoService;
 
 @RestController
 public class MyTroller {
     @Autowired
-	private DataSourceConfig dataSourceConfig;
-	@GetMapping("/")
+	private DbtoService dbtoService;
+	
+	@GetMapping("/hello")
 	public String ss() {
 		
-		String driverClass = dataSourceConfig.getDriverClass();
-		return driverClass;
+		dbtoService.dbser();
+		return "hello";
+	}
+	@GetMapping("/hello1")
+	public String ss1() {
+		
+		dbtoService.insertaddressMapById();
+		return "hello";
 	}
 }

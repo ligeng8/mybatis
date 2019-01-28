@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dt.spring.mapper.AdrressMapper">
+  <resultMap id="BaseResultMap" type="com.dt.spring.pojo.Adrress">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dang_province_id" jdbcType="INTEGER" property="dangProvinceId" />
+    <result column="dang_province_name" jdbcType="VARCHAR" property="dangProvinceName" />
+    <result column="dang_city_id" jdbcType="INTEGER" property="dangCityId" />
+    <result column="dang_city_name" jdbcType="VARCHAR" property="dangCityName" />
+    <result column="dang_area_id" jdbcType="INTEGER" property="dangAreaId" />
+    <result column="dang_area_name" jdbcType="VARCHAR" property="dangAreaName" />
+    <result column="dang_street_id" jdbcType="INTEGER" property="dangStreetId" />
+    <result column="dang_street_name" jdbcType="VARCHAR" property="dangStreetName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate" />
+    <result column="last_changed_date" jdbcType="TIMESTAMP" property="lastChangedDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, dang_province_id, dang_province_name, dang_city_id, dang_city_name, dang_area_id, 
+    dang_area_name, dang_street_id, dang_street_name, status, creation_date, last_changed_date
+  </sql>
+  <select id="selectByExample" parameterType="com.dt.spring.pojo.AdrressExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from address
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from address
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from address
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.dt.spring.pojo.AdrressExample">
+    delete from address
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.dt.spring.pojo.Adrress">
+    insert into address (id, dang_province_id, dang_province_name, 
+      dang_city_id, dang_city_name, dang_area_id, 
+      dang_area_name, dang_street_id, dang_street_name, 
+      status, creation_date, last_changed_date
+      )
+    values (#{id,jdbcType=BIGINT}, #{dangProvinceId,jdbcType=INTEGER}, #{dangProvinceName,jdbcType=VARCHAR}, 
+      #{dangCityId,jdbcType=INTEGER}, #{dangCityName,jdbcType=VARCHAR}, #{dangAreaId,jdbcType=INTEGER}, 
+      #{dangAreaName,jdbcType=VARCHAR}, #{dangStreetId,jdbcType=INTEGER}, #{dangStreetName,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{creationDate,jdbcType=TIMESTAMP}, #{lastChangedDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dt.spring.pojo.Adrress">
+    insert into address
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dangProvinceId != null">
+        dang_province_id,
+      </if>
+      <if test="dangProvinceName != null">
+        dang_province_name,
+      </if>
+      <if test="dangCityId != null">
+        dang_city_id,
+      </if>
+      <if test="dangCityName != null">
+        dang_city_name,
+      </if>
+      <if test="dangAreaId != null">
+        dang_area_id,
+      </if>
+      <if test="dangAreaName != null">
+        dang_area_name,
+      </if>
+      <if test="dangStreetId != null">
+        dang_street_id,
+      </if>
+      <if test="dangStreetName != null">
+        dang_street_name,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="creationDate != null">
+        creation_date,
+      </if>
+      <if test="lastChangedDate != null">
+        last_changed_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dangProvinceId != null">
+        #{dangProvinceId,jdbcType=INTEGER},
+      </if>
+      <if test="dangProvinceName != null">
+        #{dangProvinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="dangCityId != null">
+        #{dangCityId,jdbcType=INTEGER},
+      </if>
+      <if test="dangCityName != null">
+        #{dangCityName,jdbcType=VARCHAR},
+      </if>
+      <if test="dangAreaId != null">
+        #{dangAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="dangAreaName != null">
+        #{dangAreaName,jdbcType=VARCHAR},
+      </if>
+      <if test="dangStreetId != null">
+        #{dangStreetId,jdbcType=INTEGER},
+      </if>
+      <if test="dangStreetName != null">
+        #{dangStreetName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="creationDate != null">
+        #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastChangedDate != null">
+        #{lastChangedDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.dt.spring.pojo.AdrressExample" resultType="java.lang.Integer">
+    select count(*) from address
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update address
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.dangProvinceId != null">
+        dang_province_id = #{record.dangProvinceId,jdbcType=INTEGER},
+      </if>
+      <if test="record.dangProvinceName != null">
+        dang_province_name = #{record.dangProvinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dangCityId != null">
+        dang_city_id = #{record.dangCityId,jdbcType=INTEGER},
+      </if>
+      <if test="record.dangCityName != null">
+        dang_city_name = #{record.dangCityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dangAreaId != null">
+        dang_area_id = #{record.dangAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="record.dangAreaName != null">
+        dang_area_name = #{record.dangAreaName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dangStreetId != null">
+        dang_street_id = #{record.dangStreetId,jdbcType=INTEGER},
+      </if>
+      <if test="record.dangStreetName != null">
+        dang_street_name = #{record.dangStreetName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.creationDate != null">
+        creation_date = #{record.creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lastChangedDate != null">
+        last_changed_date = #{record.lastChangedDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update address
+    set id = #{record.id,jdbcType=BIGINT},
+      dang_province_id = #{record.dangProvinceId,jdbcType=INTEGER},
+      dang_province_name = #{record.dangProvinceName,jdbcType=VARCHAR},
+      dang_city_id = #{record.dangCityId,jdbcType=INTEGER},
+      dang_city_name = #{record.dangCityName,jdbcType=VARCHAR},
+      dang_area_id = #{record.dangAreaId,jdbcType=INTEGER},
+      dang_area_name = #{record.dangAreaName,jdbcType=VARCHAR},
+      dang_street_id = #{record.dangStreetId,jdbcType=INTEGER},
+      dang_street_name = #{record.dangStreetName,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=INTEGER},
+      creation_date = #{record.creationDate,jdbcType=TIMESTAMP},
+      last_changed_date = #{record.lastChangedDate,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dt.spring.pojo.Adrress">
+    update address
+    <set>
+      <if test="dangProvinceId != null">
+        dang_province_id = #{dangProvinceId,jdbcType=INTEGER},
+      </if>
+      <if test="dangProvinceName != null">
+        dang_province_name = #{dangProvinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="dangCityId != null">
+        dang_city_id = #{dangCityId,jdbcType=INTEGER},
+      </if>
+      <if test="dangCityName != null">
+        dang_city_name = #{dangCityName,jdbcType=VARCHAR},
+      </if>
+      <if test="dangAreaId != null">
+        dang_area_id = #{dangAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="dangAreaName != null">
+        dang_area_name = #{dangAreaName,jdbcType=VARCHAR},
+      </if>
+      <if test="dangStreetId != null">
+        dang_street_id = #{dangStreetId,jdbcType=INTEGER},
+      </if>
+      <if test="dangStreetName != null">
+        dang_street_name = #{dangStreetName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="creationDate != null">
+        creation_date = #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastChangedDate != null">
+        last_changed_date = #{lastChangedDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dt.spring.pojo.Adrress">
+    update address
+    set dang_province_id = #{dangProvinceId,jdbcType=INTEGER},
+      dang_province_name = #{dangProvinceName,jdbcType=VARCHAR},
+      dang_city_id = #{dangCityId,jdbcType=INTEGER},
+      dang_city_name = #{dangCityName,jdbcType=VARCHAR},
+      dang_area_id = #{dangAreaId,jdbcType=INTEGER},
+      dang_area_name = #{dangAreaName,jdbcType=VARCHAR},
+      dang_street_id = #{dangStreetId,jdbcType=INTEGER},
+      dang_street_name = #{dangStreetName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      creation_date = #{creationDate,jdbcType=TIMESTAMP},
+      last_changed_date = #{lastChangedDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

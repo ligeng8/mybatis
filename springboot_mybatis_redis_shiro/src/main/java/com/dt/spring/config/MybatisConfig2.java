@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -19,25 +18,17 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @AutoConfigureAfter(DataSourceConfig.class)
-public class MybatisConfig {
+public class MybatisConfig2 {
 
-	@Bean("annotationDriverTransactionManager")
-	@Primary
-	public PlatformTransactionManager annotationDriverTransactionManager(@Autowired@Qualifier("address")DataSource dataSource) {
+	@Bean("annotationDriverTransactionManager2")
+	public PlatformTransactionManager annotationDriverTransactionManager2(@Autowired@Qualifier("address2")DataSource dataSource) {
 		DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager(dataSource);
 		return dataSourceTransactionManager;
 	}
 
-//	@Bean
-//	@Primary
-//	public PersistenceExceptionTranslationPostProcessor persistenceExceptionTranslationPostProcessor() {
-//		PersistenceExceptionTranslationPostProcessor postProcessor = new PersistenceExceptionTranslationPostProcessor();
-//		return postProcessor;
-//	}
 	
-    @Bean("sqlSessionFactory")
-    @Primary
-	public SqlSessionFactory sqlSessionFactory(@Autowired@Qualifier("address")DataSource dataSource) {
+    @Bean("sqlSessionFactory2")
+	public SqlSessionFactory sqlSessionFactory2(@Autowired@Qualifier("address2") DataSource dataSource) {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		sqlSessionFactoryBean.setConfigLocation(new ClassPathResource("/sqlMapConfig.xml"));
@@ -51,19 +42,17 @@ public class MybatisConfig {
 	}
     
     
-    @Bean("sqlSessionTemplate")
-    @Primary
-    public SqlSessionTemplate sqlSessionTemplate(@Autowired@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+    @Bean("sqlSessionTemplate2")
+    public SqlSessionTemplate sqlSessionTemplate2(@Autowired@Qualifier("sqlSessionFactory2")SqlSessionFactory sqlSessionFactory) {
     	return new SqlSessionTemplate(sqlSessionFactory);
     }
     
-    @Bean("scannerConfigurer")
-    @Primary
-    public MapperScannerConfigurer scannerConfigurer(@Autowired@Qualifier("sqlSessionFactory")SqlSessionFactory sqlSessionFactory) {
+    @Bean("scannerConfigurer2")
+    public MapperScannerConfigurer scannerConfigurer2(@Autowired@Qualifier("sqlSessionFactory2")SqlSessionFactory sqlSessionFactory) {
     	MapperScannerConfigurer scannerConfigurer = new MapperScannerConfigurer();
-//    	scannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
+//    	scannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory2");
     	scannerConfigurer.setSqlSessionFactory(sqlSessionFactory);
-    	scannerConfigurer.setBasePackage("com.dt.spring.mapper");
+    	scannerConfigurer.setBasePackage("com.dt.spring.mapper1");
     	return scannerConfigurer ;
     }
 }

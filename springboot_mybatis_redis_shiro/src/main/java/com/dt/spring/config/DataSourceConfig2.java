@@ -16,17 +16,18 @@ import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 
 @Configuration
-public class DataSourceConfig {
+public class DataSourceConfig2 {
+
 
 	/**
 	 * 配置数据源
 	 * 
 	 * @return
 	 */
-	@Bean(value="address")
+	@Bean(value="address2")
 	public DataSource dataSource() {
 		DruidDataSource dataSource = new DruidDataSource();
-		dataSource.setUrl("jdbc:mysql://10.255.242.132:3306/AddressConfigDB?characterEncoding=utf-8");
+		dataSource.setUrl("jdbc:mysql://10.255.242.132:3306/FenxiaoPlatformDB?characterEncoding=utf-8");
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 		dataSource.setUsername("root");
 		dataSource.setPassword("godgrant");
