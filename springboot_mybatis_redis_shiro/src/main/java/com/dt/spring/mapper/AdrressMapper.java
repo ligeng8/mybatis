@@ -11,6 +11,9 @@ public interface AdrressMapper {
     int deleteByExample(AdrressExample example);
 
     int deleteByPrimaryKey(Long id);
+    
+    
+    
 
     int insert(Adrress record);
 
