@@ -23,7 +23,13 @@ public class MyTroller {
 	@GetMapping("/hello1")
 	public String ss1() {
 		
-		dbtoService.insertaddressMapById();
+		dbtoService.insertById() ;
+		return "hello";
+	}
+	@GetMapping("/hello2")
+	public String ss12() {
+		
+		dbtoService.checkInsert();
 		return "hello";
 	}
 }

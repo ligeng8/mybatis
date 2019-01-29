@@ -2,6 +2,7 @@ package com.dt.spring.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,133 @@ public class DbtoService {
 	@Autowired
 	private AdrressMapper adrressMapper;
 
+	public void checkInsert() {
+		
+		List<AdrressMap1> selectByExample = adrressMap1Mapper.selectByExample(null);
+		ArrayList<Long> idList = new ArrayList<>();
+		for (AdrressMap1 adrressMap1 : selectByExample) {
+			AdrressMapExample example = new AdrressMapExample();
+			Integer conveterpartnerId = conveterpartnerId(adrressMap1.getAddressType());
+			if(conveterpartnerId == 0 ) {
+				continue;
+			}
+			example.createCriteria().andPartnerIdEqualTo(conveterpartnerId)
+			.andProvinceNameEqualTo(adrressMap1.getProvinceName())
+			.andCityNameEqualTo(adrressMap1.getCityName())
+			.andAreaNameEqualTo(adrressMap1.getAreaName());
+			List<AdrressMap> selectByExample2 = adrressMapMapper.selectByExample(example );
+			
+			if(selectByExample2 == null || selectByExample2.isEmpty()) {
+				idList.add(adrressMap1.getId());
+			}
+		}
+		System.out.println(idList);
+	}
+	
+	public void insertById() {
+		String ids = "15612, 15804, 16142, 19030, 19073, 19228, 19229, 19490, 19695, 19725, 21575, 22865, 22866, 22867,"
+				+"22868, 22869, 22870, 22871, 22872, 22873, 22874, 22875, 22876, 22877, 22878, 22879, 22880, 22881,"
+				+"22882, 22980, 22981, 22982, 22983, 22984, 26522, 26567, 29027";
+		ArrayList<String> idList = new ArrayList<>();
+		String[] split = ids.split(","); 
+		Long dangaddressId = null;
+		for (String id : split) {
+			AdrressMap1 adrressMap1 = adrressMap1Mapper.selectByPrimaryKey(Long.parseLong(id.trim()));
+			Integer conveterpartnerId = conveterpartnerId(adrressMap1.getAddressType());
+			AdrressMapExample example1232 = new AdrressMapExample() ;
+			example1232.createCriteria().andPartnerIdEqualTo(conveterpartnerId)
+			.andProvinceNameEqualTo(adrressMap1.getProvinceName())
+			.andCityNameEqualTo(adrressMap1.getCityName())
+			.andAreaNameEqualTo(adrressMap1.getAreaName());
+			List<AdrressMap> selectByExample3 = adrressMapMapper.selectByExample(example1232);
+			for (AdrressMap adm : selectByExample3) {
+				adrressMapMapper.deleteByPrimaryKey(adm.getId());
+			}
+			if(id.trim().equals("15612")) {
+				dangaddressId = 26136l;
+			}
+			if(id.trim().equals("15804")) {
+				dangaddressId = 28787l;
+			}
+			if(id.trim().equals("16142")) {
+				dangaddressId = 29188l;
+			}
+			if(id.trim().equals("19030")) {
+				dangaddressId = 7338l;
+			}
+			if(id.trim().equals("19073")) {
+				dangaddressId = 7352l;
+			}
+			//19228
+			if(id.trim().equals("19228")) {
+				dangaddressId = 47320l;
+			}
+			if(id.trim().equals("19229")) {
+				dangaddressId = 47320l;
+			}
+			if(id.trim().equals("19490")) {
+				dangaddressId = 41394l;
+			}
+			if(id.trim().equals("19695")) {
+				dangaddressId = 46868l;
+			}
+//			if(id.trim().equals("19725")) {
+//				dangaddressId = 46868l;
+//			}
+			if(id.trim().equals("21575")) {
+				dangaddressId = 5931l;
+			}
+			
+			if(22865 <= Integer.valueOf(id.trim()) && Integer.valueOf(id.trim())<= 22882 ) {
+				dangaddressId = 47323l;
+			}
+			if(id.trim().equals("22980")) {
+				dangaddressId = 47290l;
+			}
+			if(id.trim().equals("22981")) {
+				dangaddressId = 47289l;
+			}
+			if(id.trim().equals("22982")) {
+				dangaddressId = 47296l;
+			}
+			if(id.trim().equals("22983")) {
+				dangaddressId = 47291l;
+			}
+			if(id.trim().equals("22984")) {
+				dangaddressId = 47292l;
+			}
+			if(id.trim().equals("26522")) {
+				dangaddressId = 11874l;
+			}
+			if(id.trim().equals("26567")) {
+				dangaddressId = 41664l;
+			}
+			if(id.trim().equals("29027")) {
+				dangaddressId = 38990l;
+			}
+			if (dangaddressId == null) {
+				idList.add(id);
+				continue;
+			}
+			AdrressMap record = new AdrressMap();
+//			Adrress selectByPrimaryKey = adrressMapper.selectByPrimaryKey(dangaddressId);
+			record.setPartnerId(conveterpartnerId);
+			record.setProvinceName(adrressMap1.getProvinceName());
+			record.setProvinceId("");
+			record.setCityName(adrressMap1.getCityName());
+			record.setCityId("");
+			record.setAreaName(adrressMap1.getAreaName());
+			record.setAreaId("");
+			record.setDangAddressId(dangaddressId);
+			record.setStreetId("");
+			record.setStreetName("");
+			adrressMapMapper.insert(record);
+		}
+		
+		System.out.println(idList);
+		
+	}
+	
 	
 	public void insertaddressMapById() {//15572,19725;
 		String idstr = "15280, 15572, 15612, 15693, 15804,"
@@ -48,7 +176,7 @@ public class DbtoService {
 				+ " 16215, 16216, 16217, 16218, 16219, 16220, 16221, 16222, "
 				+ "16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
 				+ "16624,"
-				+ " 16708, 16712, 16864, 16868,16726,16856,16874,16875, 16727, 16733, 16734,16749,16756, 16761, 16772, 16773, 16777, 16778, 16781,16789,16792, 16793, 16801, 16804, 16812, 16824, 16825, 16845"
+				+ " 16708, 16712, 16864, 16868,16726,16856,16874,16875, 16727, 16733, 16734,16749,16756, 16761, 16772, 16773, 16777, 16778, 16781,16789,16792, 16793, 16801, 16804, 16812, 16824, 16825, 16845,"
 				+ "16735, 16736, 16740, 16746, 16747, 16754,  16763, 16769, 16784, 16788 , 16803,  16818, 16826,16833, 16851, 16852,  16858, 16865, 16866, 16872,  16877,  16885, 16886, 16887, 16891, "
 				+ "16751, 16780, 16797,16814, 16816, 16838, 16848,16854, "
 				+ " 16879,"
@@ -61,655 +189,32 @@ public class DbtoService {
 		ArrayList<Long> idList = new ArrayList<>();
 		for (String id : split) {
 			AdrressMap1 adrressMap1 = adrressMap1Mapper.selectByPrimaryKey(Long.parseLong(id.trim()));
-			Integer conveterpartnerId = conveterpartnerId(adrressMap1.getAddressType());
-			Long dangaddressId = null;
-			if(id.equals("15280")) {
-				dangaddressId = 13272l;
-			}
-			if(id.equals("15612")) {
-				dangaddressId = 26136l;
-			}
-			if(id.equals("15693")) {
-				dangaddressId = 27459l;
-			}
-//			28729
-			if(id.equals("15804")) {
-				dangaddressId = 28729l;
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("海南")) {
-				//15944,15945,15946,15947,15948,15949,15950,15951,15952,15953,15954,15955,15956,15957,15958
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("白沙")) {
-					dangaddressId = 29183l;
-				}
-				//15959,15960,15961,15962,15963,15964,15965,15966,15967,15968,15969,15970,15971,
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("保亭")) {
-					dangaddressId = 29186l;
-				}
-				//15972,15973,15974, 15975, 15976, 15977, 15978, 15979, 15980, 15981, 15982, 15983,
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("昌江")) {
-					dangaddressId = 29182l;
-				}
-				// 15984, 15985, 15986, 15987, 15988, 15989, 15990, 15991, 15992, 15993, 15994, 15995, 15996, 15997, 15998, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("澄迈")) {
-					dangaddressId = 29179l;
-				}
-				//"15999, 16000, 16001, 16002, 16003, 16004, 16005, 16006, 16007, 16008, 16009, 16010, 16011, 16012, 16013, 16014, 16015, 16016, 16017, 16018, 16019, 16020, 16021, 16022, 16023, 16024, 16025, 16026, 16027, 16028, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("儋州")) {
-					dangaddressId = 29177l;
-				}
-				//"16029, 16030, 16031, 16032, 16033, 16034, 16035, 16036, 16037, 16038, 16039, 16040, 16041, 16042, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("定安")) {
-					dangaddressId = 29180l;
-				}
-				//"16043, 16044, 16045, 16046, 16047, 16048, 16049, 16050, 16051, 16052, 16053, 16054,"
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("东方")) {
-					dangaddressId = 29176l;
-				}
-				//16059, 16060, 16061, 16062, 16063, 16064, 16065, 16066, 16067, 16068, 16069, 16070, 16071, 16072, 16073, 16074, 16075,
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("乐东")) {
-					dangaddressId = 29187l;
-				}
-//				16076, 16077, 16078, 16079, 16080, 16081, 16082, 16083, 16084, 16085, 16086, 16087, 16088, 16089, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("临高")) {
-					dangaddressId = 29178l;
-				}
-//				"16090, 16091, 16092, 16093, 16094, 16095, 16096, 16097, 16098, 16099, 16100, 16101, 16102, 16103, 16104, 16105, 16106,"
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("陵水")) {
-					dangaddressId = 29185l;
-				}
-//				" 16107, 16108, 16109, 16110, 16111, 16112, 16113, 16114, 16115, 16116, 16117, 16118, 16119, 16120, 16121, 16122, 16123,"
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("琼海")) {
-					dangaddressId = 29173l;
-				}
-//				 " 16124, 16125, 16126, 16127, 16128, 16129, 16130, 16131, 16132, 16133, 16134, 16135, 16136, 16137, 16138, 16139,"
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("琼中")) {
-					dangaddressId = 29184l;
-				}
-				//" 16140, 16141, 16142, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("三沙")) {
-					if(adrressMap1.getAreaName().equals("中沙群岛的岛礁及其海域")) {
-						dangaddressId = 29188l;
-					}
-					if(adrressMap1.getAreaName().equals("西沙群岛")) {
-						dangaddressId = 29190l;
-					}
-					if(adrressMap1.getAreaName().equals("南沙群岛")) {
-						dangaddressId = 29191l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("三亚")) {
-				  if(adrressMap1.getAreaName().equals("南滨农场")) {//16149
-					  dangaddressId = 29168l;
-				  }
-				  if(adrressMap1.getAreaName().equals("南岛农场")) {//16150
-					  dangaddressId = 29169l;
-				  }
-				}
-//				"16156, 16157, 16158, 16159, 16160, 16161, 16162, 16163, 16164, 16165, 16166,"
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("屯昌")) {
-					dangaddressId = 29181l;
-				}
-				//" 16167, 16168, 16169, 16170, 16171, 16172, 16173, 16174, 16175, 16176, 16177, 16178, 16179, 16180, 16181, 16182, 16183, 16184, 16185,"
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("万宁")) {
-					dangaddressId = 29174l;
-				}
-				// 16186, 16187, 16188, 16189, 16190, 16191, 16192, 16193, 16194, 16195, 16196, 16197, 16198, 16199, 16200, 16201, 16202, 16203, 16204, 16205, 16206, 16207, 16208, 16209, 16210, 16211, 16212, 16213, 16214,"
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("文昌")) {
-					dangaddressId = 29172l;
-				}
-//				 16215, 16216, 16217, 16218, 16219, 16220, 16221, 16222, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("五指山")) {
-					dangaddressId = 29175l;
-				}
-				if(adrressMap1.getCityName().equals("省直辖县")) {
-					 if(adrressMap1.getAreaName().equals("白沙黎族自治县")) {//16149
-						  dangaddressId = 29183l;
-					  }
-					 if(adrressMap1.getAreaName().equals("保亭黎族苗族自治县")) {//16149
-						  dangaddressId = 29186l;
-					  }
-					 if(adrressMap1.getAreaName().equals("昌江黎族自治县")) {//16149
-						  dangaddressId = 29182l;
-					  }
-					 if(adrressMap1.getAreaName().equals("澄迈县")) {//16149
-						  dangaddressId = 29179l;
-					  }
-					 if(adrressMap1.getAreaName().equals("儋州市")) {//16149
-						  dangaddressId = 29177l;
-					  }
-					 if(adrressMap1.getAreaName().equals("定安县")) {//16149
-						  dangaddressId = 29180l;
-					  }
-					 if(adrressMap1.getAreaName().equals("东方市")) {//16149
-						  dangaddressId = 29176l;
-					  }
-					 if(adrressMap1.getAreaName().equals("乐东黎族自治县")) {//16149
-						  dangaddressId = 29187l;
-					  }
-					 if(adrressMap1.getAreaName().equals("临高县")) {//16149
-						  dangaddressId = 29178l;
-					  }
-					 if(adrressMap1.getAreaName().equals("陵水黎族自治县")) {//16149
-						  dangaddressId = 29185l;
-					  }
-					 if(adrressMap1.getAreaName().equals("琼海市")) {//16149
-						  dangaddressId = 29173l;
-					  }
-					 if(adrressMap1.getAreaName().equals("琼中黎族苗族自治县")) {//16149
-						  dangaddressId = 29184l;
-					  }
-					 if(adrressMap1.getAreaName().equals("屯昌县")) {//16149
-						  dangaddressId = 29181l;
-					  }
-					 if(adrressMap1.getAreaName().equals("万宁市")) {//16149
-						  dangaddressId = 29174l;
-					  }
-					 if(adrressMap1.getAreaName().equals("文昌市")) {//16149
-						  dangaddressId = 29172l;
-					  }
-					 if(adrressMap1.getAreaName().equals("五指山市")) {//16149
-						  dangaddressId = 29175l;
-					  }
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("河南")) {
-				//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("济源")) {
-					dangaddressId = 22183l;
-				}
-				if(adrressMap1.getCityName().equals("省直辖县")) {
-					if(adrressMap1.getAreaName().equals("济源市")) {
-						dangaddressId = 22183l;
-					}
-					
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("河北")) {
-				//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("廊坊")) {
-					if("燕郊经济技术开发区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 2498l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("秦皇岛")) {
-					if("经济技术开发区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 805l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("辽宁")) {
-				//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("沈阳")) {
-					if("浑南新区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 5817l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("鞍山")) {
-					if("高新区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 13323l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("大连")) {
-					if("大连高新区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 5931l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("沈阳")) {
-					if("经济技术开发区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 5815l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("四川")) {
-				//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("资阳")) {
-					if("简阳市".equals(adrressMap1.getAreaName().trim())) {
-						dangaddressId = 34486l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("山东")) {
-				//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("德州")) {
-					if("德州经济技术开发区".equals(adrressMap1.getAreaName().trim())) {
-						dangaddressId = 19202l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("青岛")) {
-					if("开发区".equals(adrressMap1.getAreaName().trim())) {
-						dangaddressId = 17996l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("威海")) {
-					if("经济技术开发区".equals(adrressMap1.getAreaName().trim())) {
-						dangaddressId = 18509l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("潍坊")) {
-					if("开发区".equals(adrressMap1.getAreaName().trim())) {
-						dangaddressId = 18436l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("西藏")) {
-				//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("日喀则地区")) {
-					if("萨迦县".equals(adrressMap1.getAreaName().trim())) {
-						dangaddressId = 41394l;
-					}
-					if("桑珠孜区".equals(adrressMap1.getAreaName().trim())) {
-						dangaddressId = 41539l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("阿里地区")) {
-					if("札达县".trim().equals(adrressMap1.getAreaName().trim())) {
-						dangaddressId = 41681l;
-					}
-					
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("宁夏")) {
-				//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("吴忠")) {
-					if("红寺堡开发区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 45628l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("陕西")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("西安")) {
-					if("户县".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 41921l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("广东")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("中山")) {
-					if("东区街道".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 27458l;
-					}
-					if("南区街道".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 27460l;
-					}
-					if("沙朗镇".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 27463l;
-					}
-					if("石岐区街道".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 27461l;
-					}
-					if("西区街道".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 27459l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("澳门特别行政区")) {
-				dangaddressId = 47324l;
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("甘肃")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("嘉峪关")) {
-					if("文殊镇".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 43557l;
-					}
-					if("新城镇".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 43557l;
-					}
-					if("峪泉镇".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 43557l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("广西壮族自治区")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("百色")) {
-					if("靖西市".equals(adrressMap1.getAreaName().trim())) {
-						dangaddressId = 28642l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("崇左")) {
-					if("江州区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 29042l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("桂林")) {
-					if("临桂区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 28024l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("河池")) {
-					if("宜州市".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 28817l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("柳州")) {
-					if("柳江区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 27901l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("南宁")) {
-					if("武鸣区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 27771l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("安徽")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("安庆")) {
-					if("安庆经济技术开发区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 13604l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("阜阳")) {
-					if("阜阳经济技术开发区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 14012l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("合肥")) {
-					if("新站高新区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 13014l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("淮南")) {
-					if("淮南高新技术产业开发区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 13272l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("铜陵")) {
-					if("铜官山区".equals(adrressMap1.getAreaName())) {
-						dangaddressId = 13389l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("浙江")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("杭州")) {
-					if("下沙区".equals(adrressMap1.getAreaName().trim())) {
-						dangaddressId = 11723l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("台湾")) {
-				AdrressExample example = new AdrressExample();
-				example.createCriteria().andDangProvinceNameLike("%"+adrressMap1.getProvinceName().replace("省", "").replace("市", "")+"%")
-				 .andDangCityNameLike("%"+adrressMap1.getAreaName().replace("省", "").replace("市", "").replace("县", "")+"%");
-				List<Adrress> example2 = adrressMapper.selectByExample(example );
-				if(example2!= null && example2.size()>0) {
-					dangaddressId = example2.get(0).getId();
-				}
-				if(adrressMap1.getCityName().equals("高雄市")) {
-					dangaddressId = 47298l;
-				}
-				if(adrressMap1.getCityName().equals("花莲县")) {
-					dangaddressId = 47319l;
-				}
-				if(adrressMap1.getCityName().equals("基隆市")) {
-					dangaddressId = 47299l;
-				}
-				if(adrressMap1.getCityName().equals("嘉义市")) {
-					dangaddressId = 47303l;
-				}
-				if(adrressMap1.getCityName().equals("嘉义县")) {
-					dangaddressId = 47313l;
-				}
-				if(adrressMap1.getCityName().equals("金门县")) {
-					dangaddressId = 47320l;
-				}
-				if(adrressMap1.getCityName().equals("连江县")) {
-					dangaddressId = 47320l;
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("内蒙古")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("包头")) {
-					dangaddressId = 4467l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("呼伦贝尔")) {
-					if(adrressMap1.getAreaName().equals("鄂伦春旗")) {
-						dangaddressId = 5110l;
-					}
-					if(adrressMap1.getAreaName().equals("鄂温克族旗")) {
-						dangaddressId = 5120l;
-					}
-					if(adrressMap1.getAreaName().equals("莫力达瓦旗")) {
-						dangaddressId = 5143l;
-					}
-					
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("鄂尔多斯")) {
-					if(adrressMap1.getAreaName().equals("康巴什新区")) {
-						dangaddressId = 4970l;
-					}
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("黑龙江")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("七台河")&&adrressMap1.getAreaName().equals("金沙新区")) {//16624
-					dangaddressId = 9567l;
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("湖北")) {
-//				" 16708, 16712, 16726, 16727, 16733, 16734,16749,16756, 16761, 16772, 16773, 16777, 16778, 16781,16789,16792, 16793, 16801, 16804, 16812, 16824, 16825, 16845"
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("天门")) {
-					dangaddressId = 23485l;
-				}
-//				"16735, 16736, 16740, 16746, 16747, 16754,  16763, 16769, 16784, 16788 , 16803,  16818, 16826, 16851, 16852,  16858, 16865, 16866, 16872,  16877,  16885, 16886, 16887, 16891, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("潜江")) {
-					dangaddressId = 23484l;
-				}
-//				"16751, 16780, 16797,16814, 16816, 16838, 16848,16854, "
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("神农架林区")) {
-					dangaddressId = 23486l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("宜昌市")) {
-					if(adrressMap1.getAreaName().equals("经济开发区")) {
-						
-						dangaddressId = 22811l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("仙桃")) {
-					dangaddressId = 23483l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("黄石")) {
-					dangaddressId = 22254l;
-				}
-				if(adrressMap1.getCityName().equals("省直辖县")) {
-					if(adrressMap1.getAreaName().equals("潜江市")) {
-						dangaddressId = 23484l;
-					}
-					if(adrressMap1.getAreaName().equals("神农架林区")) {
-						dangaddressId = 23486l;
-					}
-					if(adrressMap1.getAreaName().equals("天门市")) {
-						dangaddressId = 23485l;
-					}
-					if(adrressMap1.getAreaName().equals("仙桃市")) {
-						dangaddressId = 23483l;
-					}
-				}
-			}
 			
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("湖南")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("株洲")) {
-					dangaddressId = 23768l;
+			Integer conveterpartnerId = null;
+			Long dangaddressId = null;
+			try {
+				conveterpartnerId = conveterpartnerId(adrressMap1.getAddressType());
+				AdrressMapExample example1232 = new AdrressMapExample() ;
+				example1232.createCriteria().andPartnerIdEqualTo(conveterpartnerId)
+				.andProvinceNameEqualTo(adrressMap1.getProvinceName())
+				.andCityNameEqualTo(adrressMap1.getCityName())
+				.andAreaNameEqualTo(adrressMap1.getAreaName());
+				List<AdrressMap> selectByExample3 = adrressMapMapper.selectByExample(example1232);
+				for (AdrressMap adm : selectByExample3) {
+					adrressMapMapper.deleteByPrimaryKey(adm.getId());
 				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("江西")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("九江")) {
-					if("庐山风景名胜区".equals(adrressMap1.getAreaName()))
-					dangaddressId = 16094l;
+				dangaddressId = null;
+				dangaddressId = checkid(id, adrressMap1, dangaddressId);
+				if(dangaddressId ==null) {
+					idList.add(Long.valueOf(id.trim()));
+					continue;
 				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("吉林")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("长春")) {
-					if(adrressMap1.getAreaName().equals("高新技术产业开发区")) {
-						dangaddressId = 7368l;
-					}else
-					dangaddressId = 7366l;
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("新疆")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("石河子")) {
-					dangaddressId = 47289l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("巴音郭楞州")) {
-					if(adrressMap1.getAreaName().equals("库尔勒市")) {
-						
-						dangaddressId = 46580l;
-					}
-                    if(adrressMap1.getAreaName().equals("尉犁县")) {
-						
-						dangaddressId = 46609l;
-					}
-                   if(adrressMap1.getAreaName().equals("和静县")) {
-						
-						dangaddressId = 46656l;
-					}
-                   if(adrressMap1.getAreaName().equals("博湖县")) {
-						
-						dangaddressId = 46680l;
-					}
-                   if(adrressMap1.getAreaName().equals("和硕县")) {
-						
-						dangaddressId = 46670l;
-					}
-                   if(adrressMap1.getAreaName().equals("轮台县")) {
-						
-						dangaddressId = 46581l;
-					}
-                   if(adrressMap1.getAreaName().equals("若羌县")) {
-						
-						dangaddressId = 46610l;
-					}
-                   if(adrressMap1.getAreaName().equals("且末县")) {
-						
-						dangaddressId = 46620l;
-					}
-                   if(adrressMap1.getAreaName().equals("焉耆县")) {
-						
-						dangaddressId = 46695l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("昌吉州")) {
-					   if(adrressMap1.getAreaName().equals("昌吉市")) {
-							
-							dangaddressId = 46724l;
-						}
-					   if(adrressMap1.getAreaName().equals("阜康市")) {
-							
-							dangaddressId = 46725l;
-						}
-					   if(adrressMap1.getAreaName().equals("奇台县")) {
-							
-							dangaddressId = 46807l;
-						}
-					   if(adrressMap1.getAreaName().equals("奇台县")) {
-							
-							dangaddressId = 46807l;
-						}
-					   if(adrressMap1.getAreaName().equals("玛纳斯县")) {
-							
-							dangaddressId = 46786l;
-						}
-					   if(adrressMap1.getAreaName().equals("吉木萨尔县")) {
-							
-							dangaddressId = 46821l;
-						}
-					   if(adrressMap1.getAreaName().equals("呼图壁县")) {
-							
-							dangaddressId = 46761l;
-						}
-					   if(adrressMap1.getAreaName().equals("木垒县")) {
-							
-							dangaddressId = 46838l;
-						}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("博尔塔拉州")) {
-					if(adrressMap1.getAreaName().equals("博乐市")) {
-						dangaddressId = 46839l;
-					}
-					if(adrressMap1.getAreaName().equals("精河县")) {
-						dangaddressId = 46851l;
-					}
-					if(adrressMap1.getAreaName().equals("温泉县")) {
-						dangaddressId = 46863l;
-					}
-					if(adrressMap1.getAreaName().equals("阿拉山口市")) {
-						dangaddressId = 46867l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("伊犁州")) {
-					if(adrressMap1.getAreaName().equals("阿拉山口市")) {
-						dangaddressId = 46868l;
-					}
-					if(adrressMap1.getAreaName().equals("特克斯县")) {
-						dangaddressId = 47006l;
-					}
-					if(adrressMap1.getAreaName().equals("尼勒克县")) {
-						dangaddressId = 47025l;
-					}
-					if(adrressMap1.getAreaName().equals("昭苏县")) {
-						dangaddressId = 46989l;
-					}
-					if(adrressMap1.getAreaName().equals("新源县")) {
-						dangaddressId = 46967l;
-					}
-					if(adrressMap1.getAreaName().equals("霍城县")) {
-						dangaddressId = 46928l;
-					}
-					if(adrressMap1.getAreaName().equals("察布查尔县")) {
-						dangaddressId = 47027l;
-					}
-					if(adrressMap1.getAreaName().equals("巩留县")) {
-						dangaddressId = 46951l;
-					}
-					if(adrressMap1.getAreaName().equals("奎屯市")) {
-						dangaddressId = 46882l;
-					}
-					if(adrressMap1.getAreaName().equals("伊宁县")) {
-						dangaddressId = 46883l;
-					}
-					if(adrressMap1.getAreaName().equals("霍尔果斯市")) {
-						dangaddressId = 47050l;
-					}
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("五家渠市")) {
-					dangaddressId = 47292l;
-					
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("阿拉尔市")) {
-					dangaddressId = 47290l;
-					
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("图木舒克市")) {
-					dangaddressId = 19723l;
-					
-				}
-			}
-			if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("江苏")) {
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("徐州")&&adrressMap1.getAreaName().equals("八段工业园区")) {
-					dangaddressId = 10328l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("徐州")&&adrressMap1.getAreaName().equals("铜山经济技术开发区")) {
-					dangaddressId = 10316l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("徐州")&&adrressMap1.getAreaName().equals("工业园区")) {
-					dangaddressId = 10389l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("淮安")&&adrressMap1.getAreaName().equals("经济开发区")) {
-					dangaddressId = 11015l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("淮安")&&adrressMap1.getAreaName().equals("清浦区")) {
-					dangaddressId = 10894l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("镇江")) {
-					dangaddressId = 11290l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("南通")) {
-					dangaddressId = 10765l;
-				}
-				if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("扬州")) {
-					if(adrressMap1.getAreaName().equals("经济开发区")) {
-						
-						dangaddressId = 11234l;
-					}
-				}
-			}
-			if(dangaddressId ==null) {
-				idList.add(adrressMap1.getId());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println(adrressMap1);
+				System.out.println(id);
+				e.printStackTrace();
+				idList.add(Long.valueOf(id.trim()));
 				continue;
 			}
 			AdrressMap record = new AdrressMap();
@@ -727,6 +232,1285 @@ public class DbtoService {
 			adrressMapMapper.insert(record);
 				
 		}
+		System.out.println(idList);
+	}
+
+	private Long checkid(String id, AdrressMap1 adrressMap1, Long dangaddressId) {
+		if(id.equals("15280")) {
+			dangaddressId = 13272l;
+		}
+		if(id.equals("15612")) {
+			dangaddressId = 26136l;
+		}
+		if(id.equals("15693")) {
+			dangaddressId = 27459l;
+		}
+//			28729
+		if(id.equals("15804")) {
+			dangaddressId = 28729l;
+		}
+		if(id.trim().equals("15612")) {
+			dangaddressId = 26136l;
+		}
+		if(id.trim().equals("15804")) {
+			dangaddressId = 28787l;
+		}
+		if(id.trim().equals("16142")) {
+			dangaddressId = 29188l;
+		}
+		if(id.trim().equals("19030")) {
+			dangaddressId = 7338l;
+		}
+		if(id.trim().equals("19073")) {
+			dangaddressId = 7352l;
+		}
+		//19228
+		if(id.trim().equals("19228")) {
+			dangaddressId = 47320l;
+		}
+		if(id.trim().equals("19229")) {
+			dangaddressId = 47320l;
+		}
+		if(id.trim().equals("19490")) {
+			dangaddressId = 41394l;
+		}
+		if(id.trim().equals("19695")) {
+			dangaddressId = 46868l;
+		}
+//		if(id.trim().equals("19725")) {
+//			dangaddressId = 46868l;
+//		}
+		if(id.trim().equals("21575")) {
+			dangaddressId = 5931l;
+		}
+		
+		if(22865 <= Integer.valueOf(id.trim()) && Integer.valueOf(id.trim())<= 22882 ) {
+			dangaddressId = 47323l;
+		}
+		if(id.trim().equals("22980")) {
+			dangaddressId = 47290l;
+		}
+		if(id.trim().equals("22981")) {
+			dangaddressId = 47289l;
+		}
+		if(id.trim().equals("22982")) {
+			dangaddressId = 47296l;
+		}
+		if(id.trim().equals("22983")) {
+			dangaddressId = 47291l;
+		}
+		if(id.trim().equals("22984")) {
+			dangaddressId = 47292l;
+		}
+		if(id.trim().equals("26522")) {
+			dangaddressId = 11874l;
+		}
+		if(id.trim().equals("26567")) {
+			dangaddressId = 41664l;
+		}
+		if(id.trim().equals("29027")) {
+			dangaddressId = 38990l;
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("海南")) {
+			//15944,15945,15946,15947,15948,15949,15950,15951,15952,15953,15954,15955,15956,15957,15958
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("白沙")) {
+				dangaddressId = 29183l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("海南")) {
+			 if(adrressMap1.getAreaName().equals("龙华区")) {
+				 dangaddressId = 29133l;
+			 }
+			 if(adrressMap1.getAreaName().equals("美兰区")) {
+				 dangaddressId = 29165l;
+			 }
+			 if(adrressMap1.getAreaName().equals("美兰区")) {
+				 dangaddressId = 29165l;
+			 }
+			 if(adrressMap1.getAreaName().equals("琼山区")) {
+				 dangaddressId = 29155l;
+			 }
+			 if(adrressMap1.getAreaName().equals("秀英区")) {
+				 dangaddressId = 29141l;
+			 }
+			}
+			//15959,15960,15961,15962,15963,15964,15965,15966,15967,15968,15969,15970,15971,
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("保亭")) {
+				dangaddressId = 29186l;
+			}
+			//15972,15973,15974, 15975, 15976, 15977, 15978, 15979, 15980, 15981, 15982, 15983,
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("昌江")) {
+				dangaddressId = 29182l;
+			}
+			// 15984, 15985, 15986, 15987, 15988, 15989, 15990, 15991, 15992, 15993, 15994, 15995, 15996, 15997, 15998, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("澄迈")) {
+				dangaddressId = 29179l;
+			}
+			//"15999, 16000, 16001, 16002, 16003, 16004, 16005, 16006, 16007, 16008, 16009, 16010, 16011, 16012, 16013, 16014, 16015, 16016, 16017, 16018, 16019, 16020, 16021, 16022, 16023, 16024, 16025, 16026, 16027, 16028, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("儋州")) {
+				dangaddressId = 29177l;
+			}
+			//"16029, 16030, 16031, 16032, 16033, 16034, 16035, 16036, 16037, 16038, 16039, 16040, 16041, 16042, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("定安")) {
+				dangaddressId = 29180l;
+			}
+			//"16043, 16044, 16045, 16046, 16047, 16048, 16049, 16050, 16051, 16052, 16053, 16054,"
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("东方")) {
+				dangaddressId = 29176l;
+			}
+			//16059, 16060, 16061, 16062, 16063, 16064, 16065, 16066, 16067, 16068, 16069, 16070, 16071, 16072, 16073, 16074, 16075,
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("乐东")) {
+				dangaddressId = 29187l;
+			}
+//				16076, 16077, 16078, 16079, 16080, 16081, 16082, 16083, 16084, 16085, 16086, 16087, 16088, 16089, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("临高")) {
+				dangaddressId = 29178l;
+			}
+//				"16090, 16091, 16092, 16093, 16094, 16095, 16096, 16097, 16098, 16099, 16100, 16101, 16102, 16103, 16104, 16105, 16106,"
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("陵水")) {
+				dangaddressId = 29185l;
+			}
+//				" 16107, 16108, 16109, 16110, 16111, 16112, 16113, 16114, 16115, 16116, 16117, 16118, 16119, 16120, 16121, 16122, 16123,"
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("琼海")) {
+				dangaddressId = 29173l;
+			}
+//				 " 16124, 16125, 16126, 16127, 16128, 16129, 16130, 16131, 16132, 16133, 16134, 16135, 16136, 16137, 16138, 16139,"
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("琼中")) {
+				dangaddressId = 29184l;
+			}
+			//" 16140, 16141, 16142, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("三沙")) {
+				if(adrressMap1.getAreaName().equals("中沙群岛的岛礁及其海域")) {
+					dangaddressId = 29188l;
+				}
+				if(adrressMap1.getAreaName().equals("西沙群岛")) {
+					dangaddressId = 29190l;
+				}
+				if(adrressMap1.getAreaName().equals("南沙群岛")) {
+					dangaddressId = 29191l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("三亚")) {
+			  if(adrressMap1.getAreaName().equals("南滨农场")) {//16149
+				  dangaddressId = 29168l;
+			  }else
+			  if(adrressMap1.getAreaName().equals("南岛农场")) {//16150
+				  dangaddressId = 29169l;
+			  }
+			  else
+				  if(adrressMap1.getAreaName().equals("儋州市")) {//16150
+					  dangaddressId = 29177l;
+				  }else
+			 {//16150
+				  dangaddressId = 29174l;
+			  }
+			}
+//				"16156, 16157, 16158, 16159, 16160, 16161, 16162, 16163, 16164, 16165, 16166,"
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("屯昌")) {
+				dangaddressId = 29181l;
+			}
+			//" 16167, 16168, 16169, 16170, 16171, 16172, 16173, 16174, 16175, 16176, 16177, 16178, 16179, 16180, 16181, 16182, 16183, 16184, 16185,"
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("万宁")) {
+				dangaddressId = 29174l;
+			}
+			// 16186, 16187, 16188, 16189, 16190, 16191, 16192, 16193, 16194, 16195, 16196, 16197, 16198, 16199, 16200, 16201, 16202, 16203, 16204, 16205, 16206, 16207, 16208, 16209, 16210, 16211, 16212, 16213, 16214,"
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("文昌")) {
+				dangaddressId = 29172l;
+			}
+//				 16215, 16216, 16217, 16218, 16219, 16220, 16221, 16222, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("五指山")) {
+				dangaddressId = 29175l;
+			}
+			if(adrressMap1.getCityName().equals("省直辖县")|| adrressMap1.getCityName().equals("三亚")||adrressMap1.getCityName().equals("三亚市")) {
+				 if(adrressMap1.getAreaName().equals("白沙黎族自治县")) {//16149
+					  dangaddressId = 29183l;
+				  }
+				 if(adrressMap1.getAreaName().equals("保亭黎族苗族自治县")) {//16149
+					  dangaddressId = 29186l;
+				  }
+				 if(adrressMap1.getAreaName().equals("昌江黎族自治县")) {//16149
+					  dangaddressId = 29182l;
+				  }
+				 if(adrressMap1.getAreaName().equals("澄迈县")) {//16149
+					  dangaddressId = 29179l;
+				  }
+				 if(adrressMap1.getAreaName().equals("儋州市")) {//16149
+					  dangaddressId = 29177l;
+				  }
+				 if(adrressMap1.getAreaName().equals("定安县")) {//16149
+					  dangaddressId = 29180l;
+				  }
+				 if(adrressMap1.getAreaName().equals("东方市")) {//16149
+					  dangaddressId = 29176l;
+				  }
+				 if(adrressMap1.getAreaName().equals("乐东黎族自治县")) {//16149
+					  dangaddressId = 29187l;
+				  }
+				 if(adrressMap1.getAreaName().equals("临高县")) {//16149
+					  dangaddressId = 29178l;
+				  }
+				 if(adrressMap1.getAreaName().equals("陵水黎族自治县")) {//16149
+					  dangaddressId = 29185l;
+				  }
+				 if(adrressMap1.getAreaName().equals("琼海市")) {//16149
+					  dangaddressId = 29173l;
+				  }
+				 if(adrressMap1.getAreaName().equals("琼中黎族苗族自治县")) {//16149
+					  dangaddressId = 29184l;
+				  }
+				 if(adrressMap1.getAreaName().equals("屯昌县")) {//16149
+					  dangaddressId = 29181l;
+				  }
+				 if(adrressMap1.getAreaName().equals("万宁市")) {//16149
+					  dangaddressId = 29174l;
+				  }
+				 if(adrressMap1.getAreaName().equals("文昌市")) {//16149
+					  dangaddressId = 29172l;
+				  }
+				 if(adrressMap1.getAreaName().equals("五指山市")) {//16149
+					  dangaddressId = 29175l;
+				  }
+				 if(adrressMap1.getAreaName().equals("中沙群岛的岛礁及其海域")) {
+						dangaddressId = 29188l;
+					}
+					if(adrressMap1.getAreaName().equals("西沙群岛")) {
+						dangaddressId = 29190l;
+					}
+					if(adrressMap1.getAreaName().equals("南沙群岛")) {
+						dangaddressId = 29191l;
+					}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("河南")) {
+			//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("济源")||adrressMap1.getAreaName().equals("济源市")) {
+				dangaddressId = 22183l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("开封")) {
+				dangaddressId = 19947l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("洛阳")) {
+				
+				if(adrressMap1.getAreaName().equals("廛河回族区")) {
+					dangaddressId = 19973l;
+				}else {
+					dangaddressId = 20151l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("信阳")) {
+				
+				if(adrressMap1.getAreaName().equals("师河区")) {
+					dangaddressId = 21566l;
+				}else {
+					dangaddressId = 21771l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("郑州")) {
+				if(adrressMap1.getAreaName().equals("邙山区")) {
+					dangaddressId = 19812l;
+				}
+			}
+			if(adrressMap1.getCityName().equals("省直辖县")) {
+				if(adrressMap1.getAreaName().equals("济源市")) {
+					dangaddressId = 22183l;
+				}
+				
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("河北")) {
+			//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("廊坊")||adrressMap1.getCityName().replace("县", "").replace("市", "").equals("三河")) {
+				if("燕郊经济技术开发区".equals(adrressMap1.getAreaName())||"燕郊开发区".equals(adrressMap1.getAreaName()) ) {
+					dangaddressId = 2498l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("秦皇岛")) {
+				if("经济技术开发区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 805l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("辽宁")) {
+			//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("沈阳")) {
+				if("浑南新区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 5817l;
+				}else {
+					dangaddressId = 5815l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("鞍山")) {
+				if("高新区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13323l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("大连")) {
+				if("大连高新区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 5931l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("沈阳")) {
+				if("经济技术开发区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 5815l;
+				}else {
+					dangaddressId = 5815l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("锦州")) {
+				if("北宁市".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 6426l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("四川")) {
+			//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("资阳")) {
+				if("简阳市".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 34486l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("广安")) {
+				if("华莹市".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 33312l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("广元")) {
+				if("市中区".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 31960l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("成都")) {
+				if("其它区".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 30835l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("眉山")) {
+				if("眉山市".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 33931l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("山东")) {
+			//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("德州")) {
+				if("德州经济技术开发区".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 19202l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("青岛")) {
+				if("开发区".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 17996l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("曲阜")) {
+				if("息陬镇".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 18543l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("莱州")) {
+				if("莱州".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 18301l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("威海")) {
+				if("经济技术开发区".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 18509l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("潍坊")) {
+				if("开发区".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 18436l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("荷泽")) {
+				
+				AdrressExample example = new AdrressExample();
+				example.createCriteria().andDangProvinceNameLike("山东"+"%")
+				.andDangCityNameLike("菏泽"+"%")
+				.andDangAreaNameLike(adrressMap1.getAreaName()+"%");
+				List<Adrress> selectByExample = adrressMapper.selectByExample(example );
+				if(selectByExample!= null && selectByExample.size() >0) {
+					dangaddressId = selectByExample.get(0).getId();
+				}else {
+					dangaddressId = 19618l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").replace("西藏自治区", "").equals("西藏")|| adrressMap1.getProvinceName().equals("西藏自治区")) {
+			//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("日喀则地区")) {
+				if("萨迦县".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41394l;
+				}
+				if("桑珠孜区".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41539l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("阿里地区")) {
+				if("札达县".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41681l;
+				}else
+				if("波密县".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41756l;
+				}else
+				if("察隅县".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41763l;
+				}else
+				if("工布江达县".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41726l;
+				}else
+				if("朗县".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 26176l;
+				}else
+				if("林芝县".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41716l;
+				}else
+				if("米林县".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41735l;
+				}else
+				if("墨脱县".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41744l;
+				}else {
+					dangaddressId = 41708l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("山南地区")) {
+				if("措美县".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41267l;
+				}else if("错那县".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41300l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("那曲市")) {
+				if("色尼区".trim().equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 41664l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("宁夏")) {
+			//"16401, 16402, 16404, 16444, 16447, 16475, 16493, 16499, 16511, 16520, 16530, 16569, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("吴忠")) {
+				if("红寺堡开发区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 45628l;
+				}
+				if("吴忠市".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 45620l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("银川")) {
+				if("银川市".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 45522l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("青海")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("西宁")) {
+				if("西宁市".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 45035l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("海南藏族自治州")) {
+				if("共和县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 45245l;
+				}
+				if("贵德县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 45261l;
+				}
+				if("贵南县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 45282l;
+				}
+				if("兴海县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 45273l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("陕西")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("西安")) {
+				if("户县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 41921l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("延安")) {
+				if("吴旗县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 42566l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("铜川")) {
+					dangaddressId = 41972l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("宝鸡")) {
+					dangaddressId = 42119l;
+		   }
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("榆林")) {
+				if("神木县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 42894l;
+				}
+		   }
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("云南")) {
+			if(adrressMap1.getCityName().equals("德宏傣族景颇族自治州")|| adrressMap1.getCityName().equals("德宏州")) {
+				if("潞西市".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 	40826l;
+				}
+			}
+			if(adrressMap1.getCityName().equals("昆明")) {
+				if("呈贡新区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 	38993l;
+				}
+			}
+			if(adrressMap1.getCityName().equals("思茅")) {
+			
+				AdrressMapExample example = new AdrressMapExample();
+				example.createCriteria().andAreaNameEqualTo(adrressMap1.getAreaName().startsWith("普洱")?adrressMap1.getAreaName().substring("普洱".length()): adrressMap1.getAreaName());
+				List<AdrressMap> selectByExample = adrressMapMapper.selectByExample(example);
+				if(selectByExample != null && selectByExample.size() >0) {
+					dangaddressId =selectByExample.get(0).getDangAddressId();
+				}else {
+					dangaddressId = 40009l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("广东")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("中山")) {
+				if("东区街道".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 27458l;
+				}else
+				if("南区街道".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 27460l;
+				}else
+				if("沙朗镇".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 27463l;
+				}else
+				if("石岐区街道".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 27461l;
+				}else
+				if("西区街道".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 27459l;
+				}else
+				if("中山市".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 27463l;
+				}else {
+					dangaddressId =27463l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("澳门特别行政区")) {
+			dangaddressId = 47324l;
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("甘肃")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("嘉峪关")) {
+				if("文殊镇".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 43557l;
+				}else
+				if("新城镇".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 43557l;
+				}else
+				if("峪泉镇".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 43557l;
+				}else {
+					dangaddressId = 43557l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("酒泉")) {
+				if("安西县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 43557l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("临夏")) {
+				if("古河州".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 44699l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("金昌")) {
+				if("金昌市".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 43578l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("天水")) {
+				if("天水市".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 43792l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("庆阳")) {
+				if("庆阳县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 44353l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("广西壮族自治区")||adrressMap1.getProvinceName().equals("广西壮族自治区")||adrressMap1.getProvinceName().equals("广西")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("百色")) {
+				if("靖西市".equals(adrressMap1.getAreaName().trim())||"靖西县".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 28642l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("崇左")) {
+				if("江州区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 29042l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("桂林")) {
+				if("临桂区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 28024l;
+				}
+				if("荔蒲县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 28118l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("河池")) {
+				if("宜州市".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 28817l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("柳州")) {
+				if("柳江区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 27901l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("南宁")) {
+				if("武鸣区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 27771l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("百色")) {
+				if("靖西县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 28642l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").trim().equals("安徽")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("安庆")) {
+				if("安庆经济技术开发区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13604l;
+				}else
+				if("枞阳县".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13603l;
+				}else
+				if("安庆".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13603l;
+				}else {
+					dangaddressId = 13603l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("阜阳")) {
+				if("阜阳经济技术开发区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 14012l;
+				}
+				if("阜阳".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 14011l;
+				}
+			}
+			
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("亳州")) {
+				if("亳州".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 14370l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("黄山")) {
+				if("黄山".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13722l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("淮北")) {
+				if("淮北".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13368l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("宣城")) {
+				if("宣城".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 14536l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("宿州")) {
+				if("墉桥区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 14018l;
+				}
+				if("宿州".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 14120l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("蚌埠")) {
+				if("蚌埠".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13177l;
+				}
+			}
+			
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("合肥")) {
+				if("新站高新区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13014l;
+				}else
+				 {
+					dangaddressId = 13014l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("滁州")) {
+				if("滁州".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13834l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("马鞍山")) {
+				if("马鞍山".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13323l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("淮南")) {
+				if("淮南高新技术产业开发区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13272l;
+				}
+				if("淮南".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13271l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("铜陵")) {
+				if("铜官山区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13389l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("池州")) {
+				if("池州".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 14430l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("芜湖")) {
+				if("马塘区".equals(adrressMap1.getAreaName())||"新芜区".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13102l;
+				}else
+				if("芜湖市".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 13102l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("六安")) {
+				if("其它区".equals(adrressMap1.getAreaName())|| "寿县".equals(adrressMap1.getAreaName())||"六安".equals(adrressMap1.getAreaName())) {
+					dangaddressId = 14274l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").trim().equals("巢湖")) {
+					dangaddressId = 13015l;
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("浙江")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("杭州")) {
+				if("下沙区".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 11723l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("衢州")) {
+				if("衢州".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 12550l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("嘉兴")) {
+				if("秀城区".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 12080l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("宁波市")) {
+				if("其它区".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 11874l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("兰溪")) {
+				if("灵洞乡".equals(adrressMap1.getAreaName().trim())) {
+					dangaddressId = 12325l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("浙江")|| adrressMap1.getCityName().replace("县", "").replace("市", "").equals("江山")) {
+					dangaddressId = 12496l;
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("台湾")) {
+			AdrressExample example = new AdrressExample();
+			example.createCriteria().andDangProvinceNameLike("%"+adrressMap1.getProvinceName().replace("省", "").replace("市", "")+"%")
+			 .andDangCityNameLike("%"+adrressMap1.getAreaName().replace("省", "").replace("市", "").replace("县", "")+"%");
+			List<Adrress> example2 = adrressMapper.selectByExample(example );
+			if(example2!= null && example2.size()>0) {
+				dangaddressId = example2.get(0).getId();
+			}
+			if(adrressMap1.getCityName().equals("高雄市")) {
+				dangaddressId = 47298l;
+			}
+			if(adrressMap1.getCityName().equals("花莲县")) {
+				dangaddressId = 47319l;
+			}
+			if(adrressMap1.getCityName().equals("基隆市")) {
+				dangaddressId = 47299l;
+			}
+			if(adrressMap1.getCityName().equals("嘉义市")) {
+				dangaddressId = 47303l;
+			}
+			if(adrressMap1.getCityName().equals("嘉义县")) {
+				dangaddressId = 47313l;
+			}
+			if(adrressMap1.getCityName().equals("金门县")) {
+				dangaddressId = 47320l;
+			}
+			if(adrressMap1.getCityName().equals("连江县")) {
+				dangaddressId = 47320l;
+			}
+			if(adrressMap1.getCityName().equals("苗栗县")) {
+				dangaddressId = 47308l;
+			}
+			if(adrressMap1.getCityName().equals("南投县")) {
+				dangaddressId = 47311l;
+			}
+			if(adrressMap1.getCityName().equals("澎湖县")) {
+				dangaddressId = 47317l;
+			}
+			if(adrressMap1.getCityName().equals("屏东县")) {
+				dangaddressId = 47316l;
+			}
+			if(adrressMap1.getCityName().equals("台北市")) {
+				dangaddressId = 47297l;
+			}
+			if(adrressMap1.getCityName().equals("台东县")) {
+				dangaddressId = 47318l;
+			}
+			if(adrressMap1.getCityName().equals("台南市")) {
+				dangaddressId = 47301l;
+			}
+			if(adrressMap1.getCityName().equals("台中市")) {
+				dangaddressId = 47300l;
+			}
+			if(adrressMap1.getCityName().equals("桃园县")) {
+				dangaddressId = 47306l;
+			}
+			if(adrressMap1.getCityName().equals("新北市")) {
+				dangaddressId = 47304l;
+			}
+			if(adrressMap1.getCityName().equals("新竹市")) {
+				dangaddressId = 47302l;
+			}
+			if(adrressMap1.getCityName().equals("新竹县")) {
+				dangaddressId = 47307l;
+			}
+			if(adrressMap1.getCityName().equals("宜兰县")) {
+				dangaddressId = 47305l;
+			}
+			if(adrressMap1.getCityName().equals("云林县")) {
+				dangaddressId = 47312l;
+			}
+			if(adrressMap1.getCityName().equals("彰化县")) {
+				dangaddressId = 47310l;
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("内蒙古")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("包头")) {
+				if(adrressMap1.getAreaName().equals("昆都仑区")|| adrressMap1.getAreaName().equals("昆都伦区")) {
+					dangaddressId = 4353l;
+				}else
+				dangaddressId = 4467l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("呼伦贝尔")) {
+				if(adrressMap1.getAreaName().equals("鄂伦春旗")) {
+					dangaddressId = 5110l;
+				}
+				if(adrressMap1.getAreaName().equals("鄂温克族旗")) {
+					dangaddressId = 5120l;
+				}
+				if(adrressMap1.getAreaName().equals("莫力达瓦旗")) {
+					dangaddressId = 5143l;
+				}
+				
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("鄂尔多斯")) {
+				if(adrressMap1.getAreaName().equals("康巴什新区")) {
+					dangaddressId = 4970l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("黑龙江")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("七台河")&&adrressMap1.getAreaName().equals("金沙新区")) {//16624
+				dangaddressId = 9567l;
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("湖北")) {
+//				" 16708, 16712, 16726, 16727, 16733, 16734,16749,16756, 16761, 16772, 16773, 16777, 16778, 16781,16789,16792, 16793, 16801, 16804, 16812, 16824, 16825, 16845"
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("天门")) {
+				dangaddressId = 23485l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("咸宁")) {
+				if(adrressMap1.getAreaName().equals("温泉城区")) {
+					dangaddressId =23295l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("武汉")) {
+				if(adrressMap1.getAreaName().equals("乔口区")) {
+					dangaddressId = 22191l;
+				}
+				if(adrressMap1.getAreaName().equals("东湖高新区")) {
+					dangaddressId = 22197l;
+				}
+			}
+//				"16735, 16736, 16740, 16746, 16747, 16754,  16763, 16769, 16784, 16788 , 16803,  16818, 16826, 16851, 16852,  16858, 16865, 16866, 16872,  16877,  16885, 16886, 16887, 16891, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("潜江")) {
+				dangaddressId = 23484l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("巴东")) {
+				dangaddressId = 23405l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("襄樊")|| adrressMap1.getCityName().replace("县", "").replace("市", "").equals("襄阳")) {
+			  if(adrressMap1.getAreaName().equals("保康县")) {
+				  dangaddressId = 22362l;
+			  }
+			  if(adrressMap1.getAreaName().equals("樊城区")) {
+				  dangaddressId = 22265l;
+			  }
+			  if(adrressMap1.getAreaName().equals("谷城县")) {
+				  dangaddressId = 22349l;
+			  }
+			  if(adrressMap1.getAreaName().equals("老河口市")) {
+				  dangaddressId = 22287l;
+			  }
+			  if(adrressMap1.getAreaName().equals("南漳县")) {
+				  dangaddressId = 22336l;
+			  }
+			  if(adrressMap1.getAreaName().equals("襄城区")) {
+				  dangaddressId = 22255l;
+			  }
+			  if(adrressMap1.getAreaName().equals("襄阳区")) {
+				  dangaddressId = 22375l;
+			  }
+			  if(adrressMap1.getAreaName().equals("宜城市")) {
+				  dangaddressId = 22321l;
+			  }
+			  if(adrressMap1.getAreaName().equals("枣阳市")) {
+				  dangaddressId = 22302l;
+			  }
+			  if(adrressMap1.getAreaName().equals("襄阳区")) {
+				  dangaddressId = 22375l;
+			  }
+			}
+//				"16751, 16780, 16797,16814, 16816, 16838, 16848,16854, "
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("神农架林区")) {
+				dangaddressId = 23486l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("宜昌")) {
+				if(adrressMap1.getAreaName().equals("经济开发区")) {
+					
+					dangaddressId = 22811l;
+				}
+		      if(adrressMap1.getAreaName().equals("虎亭区")) {
+					
+					dangaddressId = 22710l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("仙桃")) {
+				dangaddressId = 23483l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("黄石")) {
+				dangaddressId = 22254l;
+			}
+			if(adrressMap1.getCityName().equals("省直辖县")|| adrressMap1.getCityName().equals("省直辖行政单位")) {
+				if(adrressMap1.getAreaName().equals("潜江市")) {
+					dangaddressId = 23484l;
+				}
+				if(adrressMap1.getAreaName().equals("神农架林区")) {
+					dangaddressId = 23486l;
+				}
+				if(adrressMap1.getAreaName().equals("天门市")) {
+					dangaddressId = 23485l;
+				}
+				if(adrressMap1.getAreaName().equals("仙桃市")) {
+					dangaddressId = 23483l;
+				}
+				if(adrressMap1.getAreaName().equals("天门市")) {
+					dangaddressId = 23485l;
+				}
+			}
+		}
+		
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("湖南")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("株洲")) {
+				dangaddressId = 23768l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("沅江")) {
+				dangaddressId = 24958l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("娄底")) {
+				if(adrressMap1.getAreaName().equals("娄底市")) {
+					dangaddressId = 25926l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("贵州")) {
+			if(adrressMap1.getCityName().equals("铜仁地区")) {
+				AdrressExample example = new AdrressExample();
+				example.createCriteria().andDangProvinceNameEqualTo("贵州")
+				.andDangCityNameEqualTo("铜仁市")
+				.andDangAreaNameEqualTo(adrressMap1.getAreaName());
+				List<Adrress> selectByExample = adrressMapper.selectByExample(example);
+				if(selectByExample != null && selectByExample.size()>0) {
+					dangaddressId = selectByExample.get(0).getId();
+				}else
+				dangaddressId = 37256l;
+			}else if(adrressMap1.getCityName().equals("毕节地区")) {
+				AdrressExample example = new AdrressExample();
+				example.createCriteria().andDangProvinceNameEqualTo("贵州")
+				.andDangCityNameEqualTo("毕节市")
+				.andDangAreaNameEqualTo(adrressMap1.getAreaName());
+				List<Adrress> selectByExample = adrressMapper.selectByExample(example);
+				if(selectByExample != null && selectByExample.size()>0) {
+					dangaddressId = selectByExample.get(0).getId();
+				}else
+				dangaddressId = 37753l;
+			}else if(adrressMap1.getCityName().equals("兴义")) {
+				dangaddressId	=37797l;
+			}
+		
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("江西")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("九江")) {
+				if("庐山风景名胜区".equals(adrressMap1.getAreaName()))
+				dangaddressId = 16094l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("新余")) {
+				if("新余".equals(adrressMap1.getAreaName()))
+				dangaddressId = 16365l;
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("吉林")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("长春")) {
+				if(adrressMap1.getAreaName().equals("高新技术产业开发区")) {
+					dangaddressId = 7368l;
+				}else
+				dangaddressId = 7366l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("白山")) {
+				if(adrressMap1.getAreaName().equals("八道江区")) {
+					dangaddressId = 7845l;
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("新疆")|| adrressMap1.getProvinceName().equals("新疆维吾尔自治区")||adrressMap1.getProvinceName().equals("新疆维吾尔自治区")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("石河子")) {
+				dangaddressId = 47289l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("巴音郭楞州")) {
+				if(adrressMap1.getAreaName().equals("库尔勒市")) {
+					
+					dangaddressId = 46580l;
+				}
+		        if(adrressMap1.getAreaName().equals("尉犁县")) {
+					
+					dangaddressId = 46609l;
+				}
+		       if(adrressMap1.getAreaName().equals("和静县")) {
+					
+					dangaddressId = 46656l;
+				}
+		       if(adrressMap1.getAreaName().equals("博湖县")) {
+					
+					dangaddressId = 46680l;
+				}
+		       if(adrressMap1.getAreaName().equals("和硕县")) {
+					
+					dangaddressId = 46670l;
+				}
+		       if(adrressMap1.getAreaName().equals("轮台县")) {
+					
+					dangaddressId = 46581l;
+				}
+		       if(adrressMap1.getAreaName().equals("若羌县")) {
+					
+					dangaddressId = 46610l;
+				}
+		       if(adrressMap1.getAreaName().equals("且末县")) {
+					
+					dangaddressId = 46620l;
+				}
+		       if(adrressMap1.getAreaName().equals("焉耆县")) {
+					
+					dangaddressId = 46695l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("昌吉州")||adrressMap1.getCityName().equals("昌吉回族自治州") ) {
+				   if(adrressMap1.getAreaName().equals("昌吉市")) {
+						
+						dangaddressId = 46724l;
+					}
+				   if(adrressMap1.getAreaName().equals("阜康市")) {
+						
+						dangaddressId = 46725l;
+					}
+				   if(adrressMap1.getAreaName().equals("奇台县")) {
+						
+						dangaddressId = 46807l;
+					}
+				   if(adrressMap1.getAreaName().equals("奇台县")) {
+						
+						dangaddressId = 46807l;
+					}
+				   if(adrressMap1.getAreaName().equals("玛纳斯县")) {
+						
+						dangaddressId = 46786l;
+					}
+				   if(adrressMap1.getAreaName().equals("吉木萨尔县")) {
+						
+						dangaddressId = 46821l;
+					}
+				   if(adrressMap1.getAreaName().equals("呼图壁县")) {
+						
+						dangaddressId = 46761l;
+					}
+				   if(adrressMap1.getAreaName().equals("木垒县")) {
+						
+						dangaddressId = 46838l;
+					}
+				   if(adrressMap1.getAreaName().equals("米泉市")) {
+						
+						dangaddressId = 46843l;
+					}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("博尔塔拉州")) {
+				if(adrressMap1.getAreaName().equals("博乐市")) {
+					dangaddressId = 46839l;
+				}
+				if(adrressMap1.getAreaName().equals("精河县")) {
+					dangaddressId = 46851l;
+				}
+				if(adrressMap1.getAreaName().equals("温泉县")) {
+					dangaddressId = 46863l;
+				}
+				if(adrressMap1.getAreaName().equals("阿拉山口市")) {
+					dangaddressId = 46867l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("伊犁州")) {
+				if(adrressMap1.getAreaName().equals("阿拉山口市")) {
+					dangaddressId = 46868l;
+				}
+				if(adrressMap1.getAreaName().equals("特克斯县")) {
+					dangaddressId = 47006l;
+				}
+				if(adrressMap1.getAreaName().equals("尼勒克县")) {
+					dangaddressId = 47025l;
+				}
+				if(adrressMap1.getAreaName().equals("昭苏县")) {
+					dangaddressId = 46989l;
+				}
+				if(adrressMap1.getAreaName().equals("新源县")) {
+					dangaddressId = 46967l;
+				}
+				if(adrressMap1.getAreaName().equals("霍城县")) {
+					dangaddressId = 46928l;
+				}
+				if(adrressMap1.getAreaName().equals("察布查尔县")) {
+					dangaddressId = 47027l;
+				}
+				if(adrressMap1.getAreaName().equals("巩留县")) {
+					dangaddressId = 46951l;
+				}
+				if(adrressMap1.getAreaName().equals("奎屯市")) {
+					dangaddressId = 46882l;
+				}
+				if(adrressMap1.getAreaName().equals("伊宁县")) {
+					dangaddressId = 46883l;
+				}
+				if(adrressMap1.getAreaName().equals("霍尔果斯市")) {
+					dangaddressId = 47050l;
+				}
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("五家渠")) {
+				dangaddressId = 47292l;
+				
+			}
+			if(adrressMap1.getCityName().equals("阿拉尔市")) {
+				dangaddressId = 47290l;
+				
+			}
+			if(adrressMap1.getCityName().equals("图木舒克市")) {
+				dangaddressId = 19723l;
+				
+			}
+			if(adrressMap1.getCityName().equals("省直辖行政单位")) {
+				if(adrressMap1.getAreaName().equals("东山区")) {
+					dangaddressId = 45853l;
+				}
+				if(adrressMap1.getAreaName().equals("阿拉尔市")) {
+					dangaddressId = 47290l;
+				}
+				if(adrressMap1.getAreaName().equals("石河子市")) {
+					dangaddressId = 26448l;
+				}
+				if(adrressMap1.getAreaName().equals("图木舒克市")) {
+					dangaddressId = 47291l;
+				}
+				if(adrressMap1.getAreaName().equals("五家渠市")) {
+					dangaddressId = 47292l;
+				}
+			}
+			if(adrressMap1.getCityName().equals("自治区直辖县级行政区划")) {
+				AdrressExample example = new AdrressExample();
+				example.createCriteria()
+			.andDangProvinceNameLike("新疆"+"%")
+				     .andDangCityNameLike(adrressMap1.getCityName().replace("县", "").replace("市", "").replace("地区", "").replace("自治州", "")+"%");
+				    
+				List<Adrress> selectByExample = adrressMapper.selectByExample(example);
+				dangaddressId = selectByExample.get(0).getId();
+			}
+			
+			if(dangaddressId == null) {
+				AdrressMapExample example1 = new AdrressMapExample();
+				example1.createCriteria().andProvinceNameLike("新疆"+"%")
+				.andCityNameLike(adrressMap1.getCityName().replace("县", "").replace("市", "").replace("地区", "").replace("自治州", "")+"%")
+				.andAreaNameLike(adrressMap1.getAreaName().replace("县", "").replace("市", "").replace("地区", "").replace("自治州", "")+"%");
+				List<AdrressMap> selectByExample2 = adrressMapMapper.selectByExample(example1 );
+				if(selectByExample2 != null &&selectByExample2.size() >0) {
+					dangaddressId =	selectByExample2.get(0).getDangAddressId();
+				}else {
+				AdrressExample example = new AdrressExample();
+				example.createCriteria().andDangProvinceNameLike("新疆"+"%")
+				     .andDangCityNameLike(adrressMap1.getCityName().replace("县", "").replace("市", "").replace("地区", "").replace("自治州", "")+"%")
+				      .andDangAreaNameLike(adrressMap1.getAreaName().replace("县", "").replace("市", "").replace("地区", "").replace("自治州", "")+"%");
+				List<Adrress> selectByExample = adrressMapper.selectByExample(example);
+				
+				dangaddressId = selectByExample.get(0).getId();
+				}
+			}
+		}
+		if(adrressMap1.getProvinceName().replace("省", "").replace("市", "").equals("江苏")) {
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("徐州")&&adrressMap1.getAreaName().equals("八段工业园区")) {
+				dangaddressId = 10328l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("徐州")&&adrressMap1.getAreaName().equals("铜山经济技术开发区")) {
+				dangaddressId = 10316l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("徐州")&&adrressMap1.getAreaName().equals("工业园区")) {
+				dangaddressId = 10389l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("淮安")&&adrressMap1.getAreaName().equals("经济开发区")) {
+				dangaddressId = 11015l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("泰兴")&&adrressMap1.getAreaName().equals("泰兴市")) {
+				dangaddressId = 11338l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("海门")&&adrressMap1.getAreaName().equals("海门市")) {
+				dangaddressId = 10655l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("淮安")&&adrressMap1.getAreaName().equals("清浦区")) {
+				dangaddressId = 10894l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("淮安")&&adrressMap1.getAreaName().equals("楚州区")) {
+				dangaddressId = 11014l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("镇江")) {
+				dangaddressId = 11290l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("南通")) {
+				dangaddressId = 10765l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("高邮")) {
+				dangaddressId = 11217l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("盐城")) {
+					dangaddressId = 11141l;
+			}
+			if(adrressMap1.getCityName().replace("县", "").replace("市", "").equals("扬州")) {
+				if(adrressMap1.getAreaName().equals("经济开发区")) {
+					
+					dangaddressId = 11234l;
+				}
+			}
+		}
+		return dangaddressId;
 	}
 	
 	
@@ -738,9 +1522,20 @@ public class DbtoService {
 		List<AdrressMap1> selectByExample = adrressMap1Mapper.selectByExample(null);
 		for (AdrressMap1 adrressMap1 : selectByExample) {
 			Integer conveterpartnerId = conveterpartnerId(adrressMap1.getAddressType());
+			
+			AdrressMapExample example12 = new AdrressMapExample();
 			if(conveterpartnerId == 0 ) {
 				continue;
 			}
+			example12.createCriteria().andPartnerIdEqualTo(conveterpartnerId)
+			.andProvinceNameEqualTo(adrressMap1.getProvinceName())
+			.andCityNameEqualTo(adrressMap1.getCityName())
+			.andAreaNameEqualTo(adrressMap1.getAreaName());
+			List<AdrressMap> selectByExample2111 = adrressMapMapper.selectByExample(example12 );
+			if(selectByExample2111 != null && selectByExample2111.size()>0) {
+				continue;
+			}
+			
 			
 			
 			AdrressMapExample example = new AdrressMapExample();
@@ -807,6 +1602,14 @@ public class DbtoService {
 				if(adrressMap1.getCityName().equals("澳门特别行政区")) {
 					dangaddressId = 47324l;
 				}
+			}
+			if(adrressMap1.getProvinceName().equals("香港特别行政区")) {
+				
+					dangaddressId = 47323l;
+				
+			}
+			if(dangaddressId ==null) {
+				dangaddressId = checkid(adrressMap1.getId()+"", adrressMap1, dangaddressId);
 			}
 			if (dangaddressId == null) {
 				idList.add(adrressMap1.getId());
